@@ -19,9 +19,6 @@ set( TestU01_VERSION_STRING "${TestU01_MAJOR_VERSION}.${TestU01_MINOR_VERSION}" 
 OPTION ( TestU01_BUILD_STATIC "Build a static library." ON )
 OPTION ( TestU01_BUILD_SHARED "Build a shared library." OFF )
 
-endif ()
-
-
 #--------------------------------------------------
 # initial settings - non-cached
 
@@ -34,7 +31,7 @@ set( TestU01_TESTU01_DIR   ${TestU01_ROOT_DIR}/testu01 )
 set( TestU01_INCLUDE_DIR ${TestU01_ROOT_DIR}/include )
 set( TestU01_MYLIB_DIR ${TestU01_ROOT_DIR}/mylib )
 set( TestU01_PROBDIST_DIR ${TestU01_ROOT_DIR}/probdist )
-set( TestU01_EXAMPLES_DIR   ${TestU01_ROOT_DIR}/examples )
+set( TestU01_EXAMPLES_DIR ${TestU01_ROOT_DIR}/examples )
 set( TestU01_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR} )
 
 set( CMAKE_MODULE_PATH "${TestU01_ROOT_DIR}/build/CMake/modules" )
@@ -49,6 +46,8 @@ include ( config.cmake )
 
 #---------------------------------------------------------
 # Extract the header files.
+
+message( ERROR ${PROJECT_BINARY_DIR} )
 
 # Build the extractor.
 message( STATUS "Compiling mylib/tcode.c ..." )
@@ -80,21 +79,21 @@ file( GLOB TestU01_HEADERS ${TestU01_INCLUDE_DIR}/*.h )
 file( GLOB TestU01_SOURCES ${TestU01_TESTU01_DIR}/*.c )
 file( GLOB TestU01_MYLIB ${TestU01_MYLIB_DIR}/*.h ${TestU01_MYLIB_DIR}/*.c )
 file( GLOB TestU01_PROBDIST ${TestU01_PROBDIST_DIR}/*.h ${TestU01_PROBDIST_DIR}/*.c )
-file( GLOB TestU01_EXAMPLES ${TestU01_EXAMPLES_DIR}/*.c 
+file( GLOB TestU01_EXAMPLES ${TestU01_EXAMPLES_DIR}/*.c )
 
 # define a macro to create hierarchical source groups based on a dir tree
 # Taken from QuantLib-CMake.
-macro ( create_source_group GroupPrefix RootDir ProjectSources  )
-  set ( DirSources ${ProjectSources} )
-  foreach ( Source ${DirSources} )
-    string ( REGEX REPLACE "${RootDir}" "" RelativePath "${Source}" )
-    string ( REGEX REPLACE "[\\\\/][^\\\\/]*$" "" RelativePath "${RelativePath}" )
-    string ( REGEX REPLACE "^[\\\\/]" "" RelativePath "${RelativePath}" )
-    string ( REGEX REPLACE "/" "\\\\\\\\" RelativePath "${RelativePath}" )
+macro( create_source_group GroupPrefix RootDir ProjectSources  )
+  set( DirSources ${ProjectSources} )
+  foreach( Source ${DirSources} )
+    string( REGEX REPLACE "${RootDir}" "" RelativePath "${Source}" )
+    string( REGEX REPLACE "[\\\\/][^\\\\/]*$" "" RelativePath "${RelativePath}" )
+    string( REGEX REPLACE "^[\\\\/]" "" RelativePath "${RelativePath}" )
+    string( REGEX REPLACE "/" "\\\\\\\\" RelativePath "${RelativePath}" )
 	#message( STATUS "${GroupPrefix}\\${RelativePath} FILES ${Source}" )
-    source_group ( "${GroupPrefix}\\${RelativePath}" FILES ${Source} )
-  endforeach ( Source )
-endmacro ( create_source_group )
+    source_group( "${GroupPrefix}\\${RelativePath}" FILES ${Source} )
+  endforeach( Source )
+endmacro( create_source_group )
 
 create_source_group( "include" ${TestU01_INCLUDE_DIR} "${TestU01_HEADERS}" )
 create_source_group( "testu01" ${TestU01_TESTU01_DIR} "${TestU01_SOURCES}" )
