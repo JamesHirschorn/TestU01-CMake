@@ -5,7 +5,6 @@ TestU01 Library including a CMake build system.
 
 Copyright (c) 2002 Pierre L'Ecuyer, Université de Montréal.
 Copyright (C) 2014 James Hirschorn <James.Hirschorn@gmail.com>
-
 -----------------------------------------------------------------------------
 
 This is a CMake build system for the TestU01 library for the empirical 
