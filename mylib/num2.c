@@ -8,6 +8,9 @@
  * e-mail: lecuyer@iro.umontreal.ca
  * All rights reserved.
  *
+ * Fixes by James Hirschorn, 2014:
+ *	 1. Workaround for compilers that do not allow 1.0/0.0;
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted without a fee for private, research,
  * academic, or other non-commercial purposes.
@@ -37,6 +40,11 @@
 
 #define EPSILON  1.0E-15
 #define MAXI 50
+
+/* If ISO C99 INFINITY is not available. */
+#ifndef INFINITY
+#define INFINITY HUGE_VAL
+#endif
 
 /* The factorials n! from n = 0 to n = 170 */
 static double Factorials[] = {
@@ -280,7 +288,7 @@ double num2_Factorial (int n)
    if (n <= 170)
       return Factorials[n];
    util_Warning (1, "num2_Factorial:   n > 170:   return inf");
-   return 1.0 / 0.0;
+   return INFINITY; 
 }
 
 

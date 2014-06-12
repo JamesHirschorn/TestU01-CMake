@@ -7,6 +7,7 @@ include( CheckCXXSourceCompiles )
 include( CheckTypeSize )
 include( TestBigEndian )
 include( CheckFunctionExists )
+include( CheckSymbolExists )
 
 #------------------------------------------------
 # General info
@@ -89,10 +90,10 @@ check_type_size( "size_t" SIZE_T )
 #------------------------------------------------
 # Check for math functions.
 
-check_function_exists( "erf" ERF )
-check_function_exists( "random" RANDOM )
-check_function_exists( "lgamma" LGAMMA )
-check_function_exists( "log1p" LOG1P )
+check_symbol_exists( "erf" "tgmath.h;xtgmath.h" ERF )
+check_symbol_exists( "random" "tgmath.h;xtgmath.h" RANDOM )
+check_symbol_exists( "lgamma" "tgmath.h;xtgmath.h" LGAMMA )
+check_symbol_exists( "log1p" "tgmath.h;xtgmath.h" LOG1P )
 
 #------------------------------------------------
 # DONE - configure the files, creating config.h and gdefconf.h

@@ -8,6 +8,10 @@
  * e-mail: lecuyer@iro.umontreal.ca
  * All rights reserved.
  *
+ *
+ * Changes by James Hirschorn, 2014:
+ *	 1. Added check_mode to check whether there is a header file to be extracted.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted without a fee for private, research,
  * academic, or other non-commercial purposes.
@@ -43,7 +47,8 @@
 
 #define MaxChar 255                  /* max. length of a line */
 
-#define Mess1 "\nUsage:   tcode  <FileIn>  <FileOut>\n\n"
+#define Mess1 "\nUsage:   tcode  <FileIn>  <FileOut>" \
+	          "\n   or:   tcode  -check    <FileIn>\n\n"
 #define Mess2 "\nERROR:   The 2 files must be different\n\n"
 
 
@@ -57,6 +62,7 @@ static char Line[MaxChar + 1] = {0}, /* One line of input */
 
 static FILE *fin,                    /* Input file */
   *fout;                             /* Output file */
+static int check_only;				 /* Just check for code when set, as indicated by the return value. */
 
 static size_t L1, L2, L3, L4, L5, L6, L7, L8; /* Lengths of strings */
 
@@ -77,6 +83,10 @@ static void Init (int argc, char *argv[])
       printf (Mess2);
       exit (EXIT_FAILURE);
    }
+   if (check_only = !strcmp (FIn, "-check"))
+   {
+	  strcpy(FIn, FOut); 
+   }
 
    errno = 0;
    fin = fopen (FIn, "r");
@@ -84,11 +94,14 @@ static void Init (int argc, char *argv[])
       printf ("\nOpening of %s failed: %s\n\n", FIn, strerror (errno));
       exit (EXIT_FAILURE);
    }
-   errno = 0;
-   fout = fopen (FOut, "w");
-   if (fout == NULL) {
-      printf ("\nOpening of %s failed: %s\n\n", FOut, strerror (errno));
-      exit (EXIT_FAILURE);
+   if (!check_only)
+   {
+	  errno = 0;
+	  fout = fopen (FOut, "w");
+	  if (fout == NULL) {
+		 printf ("\nOpening of %s failed: %s\n\n", FOut, strerror (errno));
+		 exit (EXIT_FAILURE);
+	  }
    }
 
    L1 = strlen ("\\code");
@@ -196,14 +209,26 @@ int main (int argc, char *argv[])
             *p = '\0';
             q = strchr (Line, '%');
             if (NULL == q)
+			{
                /* otherwise, it is valid code: process rest of line */
+			   if (check_only)
+			   {
+				   printf("has code");
+				  return 1;
+			   }
                isCode = ProcessLine (p + L1);
+			}
          }
       }
    }
 
-   fprintf (fout, "\n");
-   fclose (fout);
+   if (!check_only)
+   {
+      fprintf (fout, "\n");
+      fclose (fout);
+   }
+   else
+	   printf("has no code");
    fclose (fin);
    return 0;
 }

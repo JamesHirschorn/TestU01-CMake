@@ -8,6 +8,9 @@
  * e-mail: lecuyer@iro.umontreal.ca
  * All rights reserved.
  *
+ * Fixes by James Hirschorn, 2014:
+ *	 1. Fixed C99 compliancy issue.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted without a fee for private, research,
  * academic, or other non-commercial purposes.
@@ -61,14 +64,15 @@ fileTimeToInt64 (const FILETIME * time)
 }
 
 static void Heure (unsigned long *tsec, unsigned long *tusec) {
+   FILETIME creationTime, exitTime, kernelTime, userTime;
+   ULONGLONG rawTime;
    if (currentProcess == NULL)
       currentProcess = GetCurrentProcess();
-   FILETIME creationTime, exitTime, kernelTime, userTime;
    /* Strongly inspired from
     * http://www.javaworld.com/javaworld/javaqa/2002-11/01-qa-1108-cpu.html */
    GetProcessTimes (currentProcess, &creationTime, &exitTime,
 		   &kernelTime, &userTime);
-   ULONGLONG rawTime = fileTimeToInt64 (&kernelTime) +
+   rawTime = fileTimeToInt64 (&kernelTime) +
      fileTimeToInt64 (&userTime);
    /* We have to divide by 10000 to get milliseconds out of
     * the computed time */

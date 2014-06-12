@@ -47,28 +47,44 @@ include ( config.cmake )
 #---------------------------------------------------------
 # Extract the header files.
 
-message( ERROR ${PROJECT_BINARY_DIR} )
-
-# Build the extractor.
-message( STATUS "Compiling mylib/tcode.c ..." )
-set( tcode_BINARY_FILENAME ${PROJECT_BINARY_DIR}/tcode )
+# Build the extractor, if it has not been build already.
+set( tcode_BINARY_FILENAME tcode )
 if( CMAKE_HOST_WIN32 )
 	set( tcode_BINARY_FILENAME ${tcode_BINARY_FILENAME}.exe )
 endif( CMAKE_HOST_WIN32 )
-try_compile( COMPILED ${PROJECT_BINARY_DIR} ${TestU01_MYLIB_DIR}/tcode.c COPY_FILE ${tcode_BINARY_FILENAME} )
-if( NOT COMPILED )
-	message( ERROR "Compilation failed." )
-endif( NOT COMPILED )
+find_file( tcode_BINARY_FULLPATH ${tcode_BINARY_FILENAME} ${PROJECT_BINARY_DIR} ) 
+if( NOT tcode_BINARY_FULLPATH )
+	set( tcode_BINARY_FULLPATH ${PROJECT_BINARY_DIR}/${tcode_BINARY_FILENAME} )
+	message( STATUS "Compiling mylib/tcode.c ..." )
+	try_compile( COMPILED ${PROJECT_BINARY_DIR} ${TestU01_MYLIB_DIR}/tcode.c COPY_FILE ${tcode_BINARY_FULLPATH} )
+	if( NOT COMPILED )
+		message( ERROR "Compilation failed." )
+	endif( NOT COMPILED )
+endif( NOT tcode_BINARY_FULLPATH )
+mark_as_advanced( tcode_BINARY_FULLPATH )
 
-# Call the tcode binary to extract the header files.
-foreach( Dir ${TestU01_TESTU01_DIR} ${TestU01_MYLIB_DIR} )
+# Call the tcode binary to extract the header files that have not yet been extracted.
+message( STATUS "Checking whether header files need extracting ..." )
+foreach( Dir ${TestU01_TESTU01_DIR} ${TestU01_MYLIB_DIR} ${TestU01_PROBDIST_DIR} )
 	file( GLOB TeX_FILES ${Dir}/*.tex )
 	foreach( TeX_file ${TeX_FILES} )
 		string( REPLACE ".tex" ".h" HeaderFilename ${TeX_file} )
 		string( REPLACE "${Dir}/" "" HeaderFilename ${HeaderFilename} )
-		message( STATUS "Extracting " ${HeaderFilename} " from " ${TeX_file} " ..." )
-		execute_process( COMMAND ${PROJECT_BINARY_DIR}/tcode.exe "${TeX_file}" "${HeaderFilename}" 
-						 WORKING_DIRECTORY ${TestU01_INCLUDE_DIR} OUTPUT_VARIABLE output )
+		execute_process( COMMAND ${tcode_BINARY_FULLPATH} "-check" ${TeX_file} 
+		                 WORKING_DIRECTORY ${TestU01_INCLUDE_DIR} RESULT_VARIABLE result )
+		#message( STATUS ${result} )
+		if( result EQUAL 0 )
+			#message( STATUS ${TeX_file} " contains no code." )
+		else( result EQUAL 0 )
+			find_file( header ${HeaderFilename} ${TestU01_INCLUDE_DIR} )
+			if( NOT header )
+				message( STATUS "Extracting " ${HeaderFilename} " from " ${TeX_file} " ..." )
+				execute_process( COMMAND ${tcode_BINARY_FULLPATH} ${TeX_file} ${HeaderFilename} 
+								 WORKING_DIRECTORY ${TestU01_INCLUDE_DIR} OUTPUT_VARIABLE output ERROR_VARIABLE error )
+			endif( NOT header )
+			mark_as_advanced( header )
+			unset( header )
+		endif( result EQUAL 0 )
 	endforeach (TeX_file )
 endforeach( Dir )
 
@@ -137,7 +153,7 @@ install ( DIRECTORY ${TestU01_SRC_DIR}
 )
 
 # install FindTestU01-------------------------------------
-install( FILES cmake/FindTestU01.cmake DESTINATION share/cmake )
+install( FILES CMake/FindTestU01.cmake DESTINATION share/CMake )
 
 
 
