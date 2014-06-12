@@ -3,9 +3,10 @@ TestU01-CMake
 
 TestU01 Library including a CMake build system.
 
-Copyright (C) 2002 Pierre L'Ecuyer, Université de Montréal.
-Copyright (C) 2014 James Hirschorn <James.Hirschorn@gmail.com>
------------------------------------------------------------------------------
+<h2><div>
+Copyright (C) 2002 Pierre L'Ecuyer, Université de Montréal.<br>
+Copyright (C) 2014 James Hirschorn <a href="James.Hirschorn@gmail.com">James.Hirschorn@gmail.com</a>
+</div></h2>
 
 This is a CMake build system for the TestU01 library for the empirical 
 statistical testing of uniform random number generators. The TestU01 library 
