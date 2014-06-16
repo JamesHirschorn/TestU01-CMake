@@ -4,7 +4,7 @@
 # Copyright (C) 2014 James Hirschorn <James.Hirschorn@gmail.com>	    #
 #############################################################################
 
-cmake_minimum_required ( VERSION 2.8 )
+cmake_minimum_required( VERSION 2.8 )
 
 project( TestU01 )
 set_property( GLOBAL PROPERTY USE_FOLDERS ON )
@@ -16,8 +16,8 @@ set( TestU01_VERSION_STRING "${TestU01_MAJOR_VERSION}.${TestU01_MINOR_VERSION}" 
 #--------------------------------------------------
 # initial settings - cached
 
-OPTION ( TestU01_BUILD_STATIC "Build a static library." ON )
-OPTION ( TestU01_BUILD_SHARED "Build a shared library." OFF )
+option( TestU01_BUILD_STATIC "Build a static library." ON )
+option( TestU01_BUILD_SHARED "Build a shared library." OFF )
 
 #--------------------------------------------------
 # initial settings - non-cached

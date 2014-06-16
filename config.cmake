@@ -82,16 +82,20 @@ check_type_size( "size_t" SIZE_T )
 
 #------------------------------------------------
 # Check for math library.
-
-set( LIBM_MESSAGE "Looking for math library" )
-message( STATUS ${LIBM_MESSAGE} )
-find_library( LIBM m )
-if( LIBM )
-  set( TestU01_LIBRARIES ${TestU01_LIBRARIES} ${LIBM} )
-  message( STATUS ${LIBM_MESSAGE} " - found" )
-else( LIBM )
-  message( STATUS ${LIBM_MESSAGE} " - not found" )
-endif( LIBM )
+if( NOT DEFINED LIBM )
+  set( LIBM "" CACHE FILEPATH "Math library." )
+  set( LIBM_MESSAGE "Looking for math library" )
+  message( STATUS ${LIBM_MESSAGE} )
+  find_library( LIBM m )
+  if( LIBM )
+    set( TestU01_LIBRARIES ${TestU01_LIBRARIES} ${LIBM} )
+    message( STATUS ${LIBM_MESSAGE} " - found" )
+  else( LIBM )
+    mark_as_advanced( LIBM )
+    message( STATUS ${LIBM_MESSAGE} " - not found" )
+  endif( LIBM )
+  unset( LIBM_MESSAGE )
+endif( NOT DEFINED LIBM )
 
 #------------------------------------------------
 # Check for math functions.
