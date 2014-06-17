@@ -149,9 +149,9 @@ install( TARGETS TestU01
 )
 
 # install headers ----------------------------------------
-install ( DIRECTORY ${TestU01_SRC_DIR} 
-  DESTINATION include 
-  FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
+install( DIRECTORY ${TestU01_INCLUDE_DIR} 
+  DESTINATION . 
+  FILES_MATCHING PATTERN "*.h"
 )
 
 # install FindTestU01-------------------------------------

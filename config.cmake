@@ -83,7 +83,6 @@ check_type_size( "size_t" SIZE_T )
 #------------------------------------------------
 # Check for math library.
 if( NOT DEFINED LIBM )
-  #set( LIBM "" CACHE FILEPATH "Math library." )
   set( LIBM_MESSAGE "Looking for math library" )
   message( STATUS ${LIBM_MESSAGE} )
   find_library( LIBM m )
